@@ -17,25 +17,29 @@ const selectedVideoId = ref<string>('')
 
 onMounted(async () => {
   await getVideos()
+  if (videos.value.length > 0) {
+    const id = videos.value[0]._id as string
+    selectVideo(id)
+  }
 })
 
 function selectVideo(id: string) {
   selectedVideoId.value = id
 }
 
-function removeAndUpdate(id: string, index: number) {
-  if (id === selectedVideoId.value && videos.value.length > 1) {
-    deleteVideo(id, index).then(() => {
-      const id = videos.value[0]._id
+async function removeAndUpdate(id: string, index: number): Promise<void> {
+  deleteVideo(id, index).then(async () => {
+    if (id === selectedVideoId.value && videos.value.length > 1) {
+      const id = videos.value[0]._id as string
       selectVideo(id)
-      router.push(`/bookmarks/detail/${id}`)
-    })
-  } else if (videos.length === 1) {
-    router.push('/bookmarks')
-  }
+      await router.push(`/bookmarks/detail/${id}`)
+    } else if (videos.value.length === 1) {
+      await router.push('/bookmarks')
+    }
+  })
 }
 
-function truncate(str, num) {
+function truncate(str: string, num: number) {
   if (str.length <= num) {
     return str
   }
@@ -76,8 +80,8 @@ function truncate(str, num) {
               >
 
               <template v-slot:append>
-                <UpdateForm :video="video" :index="index" :update="updateVideo" />
-                <DeleteBookmark :id="String(video._id)" :index="index" :delete="removeAndUpdate" />
+                <UpdateForm :video="video" :index="index" @update="updateVideo" />
+                <DeleteBookmark :id="String(video._id)" :index="index" @delete="removeAndUpdate" />
               </template>
             </v-list-item>
           </v-list>

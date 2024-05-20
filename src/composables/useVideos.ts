@@ -49,7 +49,6 @@ export default function useVideos(baseState: Video[]) {
 
   const deleteVideo = async (id: string, index: number): Promise<void> => {
     const response = await videoService.deleteVideo(id)
-
     const updater = (videos: Video[]) => {
       videos[index].title = response.data.title
       videos.splice(index, 1)

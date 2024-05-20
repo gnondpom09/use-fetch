@@ -1,34 +1,28 @@
 <script setup lang="ts">
-import { computed, toRefs, type Ref } from 'vue'
+import { ref, toRefs, type Ref } from 'vue'
 import type Video from '../models/video.interface'
 
 const props = defineProps<{
   video: Video
   index: number
-  update: (video: Video, index: number) => Promise<void>
 }>()
 
 const { video, index } = toRefs(props)
 
-const modelValue = computed<Video>({
-  get() {
-    return video.value
-  },
-  set(value) {
-    emit('update:video', value)
-  }
-})
+const emit = defineEmits<{
+  (e: 'submit', video: Video, index: number): Promise<void>
+}>()
+
+const modelValue = ref<Video>(video.value)
 
 function submit(isActive: Ref<boolean>) {
-  props.update(modelValue.value, index.value)
+  emit('submit', modelValue.value, index.value)
   isActive.value = false
 }
 
-function updateTitle(event) {
-  console.log(event)
-  const data = modelValue.value
-  data.title = event
-  modelValue(data)
+function updateTitle(title: string) {
+  console.log(title)
+  modelValue.value.title = title
 }
 </script>
 
@@ -48,7 +42,7 @@ function updateTitle(event) {
                   <v-text-field
                     :counter="50"
                     label="titre"
-                    :model-value="modelValue.title"
+                    :model-value="video.title"
                     @update:model-value="updateTitle($event)"
                   ></v-text-field>
                 </v-col>

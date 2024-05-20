@@ -4,13 +4,16 @@ import { toRefs, type Ref } from 'vue'
 const props = defineProps<{
   id: string
   index: number
-  delete: (id: string, index: number) => Promise<void>
+}>()
+
+const emit = defineEmits<{
+  (e: 'delete', id: string, index: number): Promise<void>
 }>()
 
 const { id, index } = toRefs(props)
 
 function submit(isActive: Ref<boolean>) {
-  props.delete(id.value, index.value)
+  emit('delete', id.value, index.value)
   isActive.value = false
 }
 </script>
