@@ -1,50 +1,17 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import type Video from '../models/video.interface'
-import useVideos from '../composables/useVideos'
+import useVideos from '../composables/crud/useVideos'
 import UpdateForm from './updateBookmark.vue'
 import AddBookmarkForm from './AddNewBookmark.vue'
 import DeleteBookmark from './DeleteBookmark.vue'
+import { truncate } from '../utils/textTransform'
+import { useBookmarManager } from '../composables/usecases/useBookmarManager.usecase'
 
 const originalState: Video[] = []
 
-const router = useRouter()
-
 const [videos, addVideo, getVideos, updateVideo, deleteVideo] = useVideos(originalState)
 
-const selectedVideoId = ref<string>('')
-
-onMounted(async () => {
-  await getVideos()
-  if (videos.value.length > 0) {
-    const id = videos.value[0]._id as string
-    selectVideo(id)
-  }
-})
-
-function selectVideo(id: string) {
-  selectedVideoId.value = id
-}
-
-async function removeAndUpdate(id: string, index: number): Promise<void> {
-  deleteVideo(id, index).then(async () => {
-    if (id === selectedVideoId.value && videos.value.length > 1) {
-      const id = videos.value[0]._id as string
-      selectVideo(id)
-      await router.push(`/bookmarks/detail/${id}`)
-    } else if (videos.value.length === 1) {
-      await router.push('/bookmarks')
-    }
-  })
-}
-
-function truncate(str: string, num: number) {
-  if (str.length <= num) {
-    return str
-  }
-  return `${str.slice(0, num)}...`
-}
+const { removeAndUpdate, selectVideo } = useBookmarManager(videos, getVideos, deleteVideo)
 </script>
 
 <template>

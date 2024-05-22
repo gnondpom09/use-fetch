@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { toRefs, ref, watchEffect } from 'vue'
-import useVideos from '../composables/useVideos'
+import useVideos from '../composables/crud/useVideos'
 import type Video from '@/models/video.interface'
 
 const props = defineProps<{

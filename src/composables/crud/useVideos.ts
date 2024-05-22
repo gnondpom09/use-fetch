@@ -1,6 +1,6 @@
 import { shallowRef } from 'vue'
-import videoService from '../services/video.service'
-import type Video from '../models/video.interface'
+import videoService from '../../services/video.service'
+import type Video from '../../models/video.interface'
 import { produce } from 'immer'
 
 export default function useVideos(baseState: Video[]) {
@@ -38,13 +38,9 @@ export default function useVideos(baseState: Video[]) {
   }
 
   const updateVideo = async (input: Video, index: number): Promise<void> => {
-    console.log(input)
-    console.log(index)
     const response = await videoService.updateVideo(input)
-    console.log(response.data)
 
     const updater = (videos: Video[]) => {
-      console.log(videos)
       videos[index].title = response.data.title
     }
 

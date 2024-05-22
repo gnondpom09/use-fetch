@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watchEffect, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import useVideos from '../composables/useVideos'
+import useVideos from '../composables/crud/useVideos'
 
 const route = useRoute()
 const video = ref<Video | null>(null)
