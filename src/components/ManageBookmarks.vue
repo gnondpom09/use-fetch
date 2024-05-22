@@ -4,14 +4,20 @@ import useVideos from '../composables/crud/useVideos'
 import UpdateForm from './updateBookmark.vue'
 import AddBookmarkForm from './AddNewBookmark.vue'
 import DeleteBookmark from './DeleteBookmark.vue'
+import SkeletonAvatarList from './SkeletonAvatarList.vue'
 import { truncate } from '../utils/textTransform'
 import { useBookmarManager } from '../composables/usecases/useBookmarManager.usecase'
 
 const originalState: Video[] = []
 
-const [videos, addVideo, getVideos, updateVideo, deleteVideo] = useVideos(originalState)
+const [videos, isLoading, addVideo, getVideos, updateVideo, deleteVideo] = useVideos(originalState)
 
-const { removeAndUpdate, selectVideo } = useBookmarManager(videos, getVideos, deleteVideo)
+const { removeAndUpdate, selectVideo, addNewVideo } = useBookmarManager(
+  videos,
+  getVideos,
+  deleteVideo,
+  addVideo
+)
 </script>
 
 <template>
@@ -26,9 +32,10 @@ const { removeAndUpdate, selectVideo } = useBookmarManager(videos, getVideos, de
         </v-card-title>
         <div class="container">
           <div class="pa-4">
-            <AddBookmarkForm :add-video="addVideo" />
+            <AddBookmarkForm :add-video="addNewVideo" />
           </div>
-          <v-list>
+          <SkeletonAvatarList v-if="isLoading" :count="videos.length || 5" />
+          <v-list v-else>
             <v-list-item
               v-for="(video, index) in videos"
               :key="video._id"

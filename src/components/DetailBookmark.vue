@@ -11,7 +11,9 @@ const { id } = toRefs(props)
 
 const video = ref<Video | null>(null)
 
-const [videos, addVideo, getVideos, updateVideo, deleteVideo, getVideoById] = useVideos([])
+const [videos, isLoading, addVideo, getVideos, updateVideo, deleteVideo, getVideoById] = useVideos(
+  []
+)
 
 watchEffect(async () => {
   if (!id.value) {
@@ -25,21 +27,27 @@ watchEffect(async () => {
 </script>
 
 <template>
-  <v-container v-if="video">
-    <h2>{{ video.title }}</h2>
+  <v-skeleton-loader
+    v-if="isLoading"
+    class="mx-auto border"
+    max-width="300"
+    type="image, article"
+  ></v-skeleton-loader>
+  <v-container v-else>
+    <h2>{{ video?.title }}</h2>
     <v-row>
       <v-col cols="12">
         <div class="img-container mt-4">
-          <img :src="video.thumbnail" alt="" />
+          <img :src="video?.thumbnail" alt="" />
         </div>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12">
-        par <span>{{ video.author }}</span>
+        par <span>{{ video?.author }}</span>
       </v-col>
       <v-col cols="12">
-        <p>Durée : {{ video.duration }} s</p>
+        <p>Durée : {{ video?.duration }} s</p>
       </v-col>
     </v-row>
   </v-container>
