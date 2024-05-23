@@ -12,11 +12,12 @@ const originalState: Video[] = []
 
 const [videos, isLoading, addVideo, getVideos, updateVideo, deleteVideo] = useVideos(originalState)
 
-const { removeAndUpdate, selectVideo, addNewVideo } = useBookmarManager(
+const { removeAndUpdate, selectVideo, addNewVideo, updateCurrentVideo } = useBookmarManager(
   videos,
   getVideos,
   deleteVideo,
-  addVideo
+  addVideo,
+  updateVideo
 )
 </script>
 
@@ -54,7 +55,7 @@ const { removeAndUpdate, selectVideo, addNewVideo } = useBookmarManager(
               >
 
               <template v-slot:append>
-                <UpdateForm :video="video" :index="index" @update="updateVideo" />
+                <UpdateForm :video="video" :index="index" @update="updateCurrentVideo" />
                 <DeleteBookmark :id="String(video._id)" :index="index" @delete="removeAndUpdate" />
               </template>
             </v-list-item>
